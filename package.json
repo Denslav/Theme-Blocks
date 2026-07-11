@@ -1,0 +1,19 @@
+{
+  "name": "theme-blocks",
+  "version": "1.1.1",
+  "private": true,
+  "description": "Custom dynamic Gutenberg blocks for WordPress.",
+  "scripts": {
+    "start": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "lint:js": "wp-scripts lint-js blocks/*/src/**/*.js"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^26.0.0",
+    "glob": "^10.4.5",
+    "typescript": "5.2.2"
+  },
+  "dependencies": {
+    "react-beautiful-dnd": "^13.1.1"
+  }
+}

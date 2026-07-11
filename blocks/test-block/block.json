@@ -1,0 +1,70 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "theme/test-block",
+  "version": "1.1.0",
+  "title": "Test Block",
+  "description": "A dynamic content block with text, a link, images, cards and a list.",
+  "category": "theme-blocks",
+  "textdomain": "theme-blocks",
+  "editorScript": "file:../../build/test-block/index.js",
+  "style": "file:../../build/test-block/style-index.css",
+  "editorStyle": "file:../../build/test-block/index.css",
+  "render": "file:./render.php",
+  "icon": "screenoptions",
+  "keywords": [
+    "content",
+    "cards",
+    "gallery"
+  ],
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonText": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonNewTab": {
+      "type": "boolean",
+      "default": false
+    },
+    "images": {
+      "type": "array",
+      "default": []
+    },
+    "cards": {
+      "type": "array",
+      "default": []
+    },
+    "list": {
+      "type": "array",
+      "default": []
+    }
+  },
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "anchor": true,
+    "className": true,
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "color": {
+      "background": true,
+      "text": true
+    }
+  }
+}

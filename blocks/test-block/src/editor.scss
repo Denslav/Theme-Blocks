@@ -1,0 +1,132 @@
+.edit-container {
+    padding: 16px;
+    border: 1px solid #c3c4c7;
+    background: #f6f7f7;
+
+    &__item {
+        padding: 18px;
+        margin-bottom: 18px;
+        background: #fff;
+        border: 1px solid #dcdcde;
+        border-radius: 4px;
+    }
+
+    &__item:last-child {
+        margin-bottom: 0;
+    }
+
+    &__section-title {
+        margin: 0 0 16px;
+        font-size: 16px;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+
+        &-item,
+        &-card {
+            min-width: 0;
+            padding: 14px;
+            border: 1px solid #c3c4c7;
+            background: #fff;
+            border-radius: 4px;
+        }
+
+        &-item {
+            cursor: grab;
+        }
+
+        &-item:active {
+            cursor: grabbing;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            border-radius: 3px;
+        }
+
+        &-card-btns,
+        &-card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        &-card-btns {
+            margin-top: 12px;
+        }
+
+        &-card-content {
+            margin-top: 16px;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    &__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 8px 20px;
+        color: #fff;
+        background: #122c38;
+        border-radius: 999px;
+    }
+
+    &__link-settings {
+        max-width: 520px;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #dcdcde;
+    }
+
+    &__card-button,
+    .add-btn {
+        margin-top: 16px;
+    }
+
+    &__list {
+        display: grid;
+        gap: 8px;
+        padding: 0;
+        margin: 0 0 16px;
+        list-style: none;
+    }
+
+    &__list-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border: 1px solid #dcdcde;
+        border-radius: 4px;
+    }
+
+    &__list-item > span {
+        flex: 1;
+    }
+}
+
+@media (max-width: 960px) {
+    .edit-container__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .edit-container__grid {
+        grid-template-columns: 1fr;
+    }
+}
