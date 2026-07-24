@@ -1,13 +1,35 @@
 {
   "name": "theme-blocks",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": true,
   "description": "Custom dynamic Gutenberg blocks for WordPress.",
   "scripts": {
     "start": "webpack --mode development --watch",
     "build": "webpack --mode production",
-    "lint:js": "wp-scripts lint-js blocks/*/src/**/*.js"
+    "lint": "npm run lint:php && npm run lint:js && npm run lint:css",
+    "lint:php": "node tools/lint-php.js",
+    "lint:js": "wp-scripts lint-js blocks/*/src/**/*.js",
+    "lint:css": "wp-scripts lint-style blocks/*/src/**/*.scss",
+    "format": "wp-scripts format blocks/*/src/**/*.{js,scss}",
+    "plugin-zip": "wp-scripts plugin-zip",
+    "release": "npm run lint && npm run build && npm run plugin-zip"
   },
+  "files": [
+    "blocks/*/block.json",
+    "blocks/*/*.php",
+    "build/*/*.php",
+    "build/*/*.css",
+    "build/*/*.js",
+    "languages",
+    "licenses",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+    "readme.txt",
+    "THIRD-PARTY-NOTICES.md",
+    "index.php",
+    "theme-blocks.php"
+  ],
   "devDependencies": {
     "@wordpress/scripts": "^26.0.0",
     "glob": "^10.4.5",

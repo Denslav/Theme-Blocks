@@ -1,62 +1,69 @@
 # Theme Blocks
 
-Custom dynamic Gutenberg blocks for WordPress.
+Theme Blocks is a lightweight WordPress plugin for registering custom dynamic Gutenberg blocks from individual block directories.
 
-The plugin automatically registers every block that contains a `block.json` file inside the `blocks` directory. Block editor assets are written in JavaScript and SCSS, compiled with Webpack, and loaded from the `build` directory. Frontend markup is rendered on the server with PHP.
-
-## Features
-
-- Dynamic Gutenberg blocks rendered with PHP.
-- Automatic block discovery from `blocks/*/block.json`.
-- Separate **Theme Blocks** category in the block inserter.
-- React-based editor interface.
-- SCSS support for editor and frontend styles.
-- Production and development builds with Webpack.
-- WordPress internationalization support.
-- Safe frontend output with WordPress escaping functions.
+The included **Test Block** is intentionally provided as an example. Its source code and compiled assets can be copied when creating a new block, but the example itself is not part of the plugin infrastructure.
 
 ## Requirements
 
-- WordPress 6.3 or newer.
-- PHP 7.4 or newer.
-- Node.js 18 or newer for development.
-- npm 9 or newer for development.
-
-The compiled files from the `build` directory are required on a production website. Node.js and npm are not required when the compiled files are already included in the plugin.
+- WordPress 6.3 or newer
+- PHP 7.4 or newer
+- Node.js and npm for block development
 
 ## Installation
 
-### Install as a WordPress plugin
+1. Copy the `theme-blocks` directory to `wp-content/plugins/`.
+2. Activate **Theme Blocks** in the WordPress admin area.
+3. Open the block editor and find the blocks in the **Theme Blocks** category.
 
-1. Download or clone the repository.
-2. Make sure the `build` directory contains the compiled assets.
-3. Copy the `theme-blocks` directory to:
+## Project structure
 
-   ```text
-   wp-content/plugins/theme-blocks
-   ```
+```text
+theme-blocks/
+├── blocks/                 Block metadata, PHP rendering and source files
+│   └── test-block/         Example dynamic block
+├── build/                  Compiled JavaScript and CSS
+├── languages/              Translation template and translation files
+├── tools/                  Local development utilities
+├── theme-blocks.php        Main plugin bootstrap
+├── webpack.config.js       Multi-block Webpack configuration
+├── package.json            npm scripts and dependencies
+└── readme.txt              WordPress plugin readme
+```
 
-4. Activate **Theme Blocks** in **WordPress → Plugins**.
-5. Open the Gutenberg editor and find the blocks in the **Theme Blocks** category.
+## How block registration works
 
-### Install from a ZIP archive
+During `init`, the plugin scans the following pattern:
 
-1. Create a ZIP archive containing the `theme-blocks` directory.
-2. Open **WordPress → Plugins → Add New Plugin → Upload Plugin**.
-3. Upload the archive and activate the plugin.
+```text
+blocks/*/block.json
+```
 
-## Development
+Every matching directory is registered with `register_block_type()`. This means a new block can be added without editing the main plugin file.
 
-Open a terminal in the plugin directory and install the dependencies:
+## Creating a new block
+
+1. Copy `blocks/test-block` to a new directory.
+2. Copy the corresponding compiled directory structure or run a fresh build.
+3. Change the block name, title, description and other metadata in `block.json`.
+4. Change the block name passed to `registerBlockType()` in `src/index.js`.
+5. Replace the example editor components, styles and PHP renderer.
+6. Run the production build.
+
+A block name must be unique and use the `namespace/block-name` format.
+
+## Development commands
+
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-Start the development watcher:
+Start development mode with file watching:
 
 ```bash
-npm start
+npm run start
 ```
 
 Create a production build:
@@ -65,287 +72,88 @@ Create a production build:
 npm run build
 ```
 
-Check the JavaScript source files:
+Run all configured linters:
 
 ```bash
+npm run lint
+```
+
+Run individual checks:
+
+```bash
+npm run lint:php
 npm run lint:js
+npm run lint:css
 ```
 
-## Project structure
+Format JavaScript and SCSS source files:
 
-```text
-theme-blocks/
-├── blocks/
-│   └── test-block/
-│       ├── block.json
-│       ├── render.php
-│       └── src/
-│           ├── components/
-│           ├── edit.js
-│           ├── editor.scss
-│           ├── index.js
-│           ├── save.js
-│           └── style.scss
-├── build/
-│   └── test-block/
-│       ├── index.asset.php
-│       ├── index.css
-│       ├── index.js
-│       └── style-index.css
-├── languages/
-├── package.json
-├── package-lock.json
-├── theme-blocks.php
-└── webpack.config.js
+```bash
+npm run format
 ```
 
-## Included block
+Create an installable plugin archive:
 
-### Test Block
-
-The included example block demonstrates:
-
-- editable title and description;
-- button text, URL, and new-tab option;
-- image gallery with drag-and-drop sorting;
-- repeatable cards with images, titles, and descriptions;
-- repeatable list items;
-- wide and full alignment support;
-- spacing and color controls;
-- server-side rendering.
-
-The block name is:
-
-```text
-theme/test-block
+```bash
+npm run plugin-zip
 ```
 
-## Adding a new block
+Run checks, build assets and create the release archive:
 
-Create a new directory inside `blocks`:
-
-```text
-blocks/hero/
+```bash
+npm run release
 ```
 
-Recommended structure:
+The `files` field in `package.json` limits the release archive to runtime files and documentation. Development source files remain available in the repository.
 
-```text
-blocks/hero/
-├── block.json
-├── render.php
-└── src/
-    ├── edit.js
-    ├── editor.scss
-    ├── index.js
-    ├── save.js
-    └── style.scss
+## Adding translations
+
+Generate or update the POT template with WP-CLI:
+
+```bash
+wp i18n make-pot . languages/theme-blocks.pot --domain=theme-blocks
 ```
 
-### 1. Add `block.json`
+After creating PO translations for JavaScript strings, generate Jed JSON files:
 
-Example:
+```bash
+wp i18n make-json languages
+```
+
+## Dynamic blocks
+
+A dynamic block normally uses:
+
+```js
+export default function save() {
+	return null;
+}
+```
+
+Its frontend markup is generated by the PHP file referenced in `block.json`:
 
 ```json
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "name": "theme/hero",
-  "version": "1.0.0",
-  "title": "Hero",
-  "category": "theme-blocks",
-  "textdomain": "theme-blocks",
-  "editorScript": "file:../../build/hero/index.js",
-  "style": "file:../../build/hero/style-index.css",
-  "editorStyle": "file:../../build/hero/index.css",
-  "render": "file:./render.php",
-  "attributes": {},
-  "supports": {
-    "anchor": true,
-    "align": ["wide", "full"],
-    "html": false
-  }
+  "render": "file:./render.php"
 }
 ```
 
-The directory name, build path, and Webpack entry name must match:
+Always escape output according to context, for example with `esc_html()`, `esc_attr()`, `esc_url()` or `wp_kses_post()`.
 
-```text
-blocks/hero/
-build/hero/
-```
+## Versioning
 
-### 2. Register the block in JavaScript
+Update the plugin version in:
 
-`blocks/hero/src/index.js`:
+- `theme-blocks.php`
+- `package.json`
+- `package-lock.json`
+- `readme.txt`
+- `CHANGELOG.md`
 
-```javascript
-import { registerBlockType } from '@wordpress/blocks';
-import Edit from './edit';
-import save from './save';
-
-import './style.scss';
-import './editor.scss';
-
-registerBlockType('theme/hero', {
-    edit: Edit,
-    save,
-});
-```
-
-For a dynamic block, `save.js` returns `null`:
-
-```javascript
-export default function save() {
-    return null;
-}
-```
-
-### 3. Add the PHP render template
-
-`blocks/hero/render.php`:
-
-```php
-<?php
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
-
-$wrapper_attributes = get_block_wrapper_attributes(
-    array(
-        'class' => 'theme-hero',
-    )
-);
-?>
-
-<section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-    <!-- Block markup -->
-</section>
-```
-
-Use the appropriate WordPress escaping function for every value:
-
-- `esc_html()` for plain text;
-- `esc_attr()` for attributes;
-- `esc_url()` for URLs;
-- `wp_kses_post()` for controlled rich text;
-- `wp_get_attachment_image()` for media-library images.
-
-### 4. Build the assets
-
-```bash
-npm start
-```
-
-or:
-
-```bash
-npm run build
-```
-
-Webpack automatically finds every file matching:
-
-```text
-blocks/*/src/index.js
-```
-
-The generated files will be placed in:
-
-```text
-build/<block-directory>/
-```
-
-No PHP registration code is required for each new block. The plugin automatically registers all directories containing a valid `block.json` file.
-
-## Dynamic rendering
-
-The plugin uses dynamic blocks. Gutenberg stores the block attributes in the post content, while the frontend markup is generated by `render.php`.
-
-This approach allows you to:
-
-- update frontend markup without resaving every post;
-- use WordPress APIs during rendering;
-- output responsive images with attachment IDs;
-- sanitize and validate attributes on the server;
-- display dynamic data.
-
-## Translations
-
-The plugin text domain is:
-
-```text
-theme-blocks
-```
-
-PHP strings should use WordPress translation functions:
-
-```php
-__( 'Theme Blocks', 'theme-blocks' );
-```
-
-JavaScript strings should use `@wordpress/i18n`:
-
-```javascript
-import { __ } from '@wordpress/i18n';
-
-let label = __('Add image', 'theme-blocks');
-```
-
-Translation files can be stored in the `languages` directory.
-
-## Troubleshooting
-
-### The block does not appear in Gutenberg
-
-Check that:
-
-- the plugin is active;
-- the block has a valid `block.json` file;
-- the `name` property is unique;
-- the files referenced by `editorScript`, `style`, and `editorStyle` exist;
-- the corresponding directory exists in `build`;
-- the production build completed without errors.
-
-### Webpack creates `build/undefined`
-
-Use `path.dirname()` and `path.basename()` to determine block directory names. Do not split paths manually with `/`, because Windows uses backslashes.
-
-The included `webpack.config.js` already handles Windows, Linux, and macOS paths.
-
-### npm tries to use an unavailable private registry
-
-Check the current registry:
-
-```bash
-npm config get registry
-```
-
-It should normally return:
-
-```text
-https://registry.npmjs.org/
-```
-
-The included `.npmrc` sets the official npm registry for this project.
-
-### Styles do not update
-
-Stop the watcher and rebuild the assets:
-
-```bash
-npm run build
-```
-
-Then clear the browser cache and any WordPress caching plugin.
-
-## Author
-
-**Den Slav**
-
-## Version
-
-Current plugin version: **1.1.1**
+A block may have its own independent version in `block.json`.
 
 ## License
 
-A license has not yet been specified. Add a `LICENSE` file before distributing the plugin as an open-source project.
+Theme Blocks is licensed under the GNU General Public License v2.0 or later. See [LICENSE](LICENSE).
+
+Bundled third-party software is documented in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
