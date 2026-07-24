@@ -1,6 +1,7 @@
 <?php
 /**
  * Plugin Name:       Theme Blocks
+ * Plugin URI:        https://github.com/Denslav/Theme-Blocks
  * Description:       Registers custom dynamic Gutenberg blocks.
  * Version:           1.1.2
  * Requires at least: 6.3
